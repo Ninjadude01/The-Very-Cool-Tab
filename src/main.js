@@ -14,9 +14,9 @@ fetch(`https://api.nasa.gov/planetary/apod?api_key=${API_KEY}&date=2026-08-12`)
     }
 
     document.querySelector("#app").innerHTML = `
-      <h1>${data.title}</h1>
+      <h1 class="apod-title">${data.title}</h1>
       ${media}
-      <p>${data.explanation}</p>
+      <p class="apod-explanation">${data.explanation}</p>
     `;
   })
   .catch(err => {
