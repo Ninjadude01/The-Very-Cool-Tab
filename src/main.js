@@ -1,24 +1,67 @@
 const API_KEY = import.meta.env.VITE_NASA_API_KEY;
 
-document.querySelector("#app").innerHTML = "<p>loading...</p>";
+const app = document.querySelector('#app');
 
-fetch(`https://api.nasa.gov/planetary/apod?api_key=${API_KEY}&date=2026-08-12`)
-  .then(response => response.json())
-  .then(data => {
-    let media;
+app.innerHTML = `
+  <div class="apod-controls">
+    <div id="apod-date" class="apod-date">Loading...</div>
+    <button id="random-btn" class="random-btn">Random Date</button>
+  </div>
+  <div id="apod-content"><p>loading...</p></div>
+`;
 
-    if (data.media_type === "image") {
-      media = `<img src="${data.url}"/>`;
-    } else {
-      media = `<video src="${data.url}" controls></video>`;
-    }
+async function fetchAPOD(date) {
+  const url = new URL('https://api.nasa.gov/planetary/apod');
+  url.searchParams.set('api_key', API_KEY);
+  if (date) url.searchParams.set('date', date);
 
-    document.querySelector("#app").innerHTML = `
-      <h1 class="apod-title">${data.title}</h1>
-      ${media}
-      <p class="apod-explanation">${data.explanation}</p>
-    `;
-  })
-  .catch(err => {
-    document.querySelector("#app").innerHTML = `<p>Error: ${err.message}</p>`;
-  });
+  const res = await fetch(url.toString());
+  if (!res.ok) throw new Error(`NASA API error ${res.status} ${res.statusText}`);
+  return res.json();
+}
+
+function renderAPOD(data) {
+  let media = '';
+
+  if (data.media_type === 'image') {
+    media = `<img src="${data.url}" alt="${data.title}"/>`;
+  } else if (typeof data.url === 'string' && (data.url.includes('youtube') || data.url.includes('youtu.be'))) {
+    const embedUrl = data.url.replace('watch?v=', 'embed/').replace('youtu.be/', 'www.youtube.com/embed/');
+    media = `<div class="video-wrapper"><iframe src="${embedUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+  } else {
+    media = data.url ? `<video src="${data.url}" controls></video>` : `<p>No media available</p>`;
+  }
+
+  document.getElementById('apod-date').textContent = data.date || '';
+  document.getElementById('apod-content').innerHTML = `
+    <h1 class="apod-title">${data.title}</h1>
+    ${media}
+    <p class="apod-explanation">${data.explanation}</p>
+  `;
+}
+
+function randomDateString() {
+  const start = new Date(1995, 5, 16); 
+  const end = new Date();
+  const rand = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+  const y = rand.getFullYear();
+  const m = String(rand.getMonth() + 1).padStart(2, '0');
+  const d = String(rand.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+document.getElementById('random-btn').addEventListener('click', async () => {
+  const date = randomDateString();
+  document.getElementById('apod-content').innerHTML = '<p>loading...</p>';
+  try {
+    const data = await fetchAPOD(date);
+    renderAPOD(data);
+  } catch (err) {
+    document.getElementById('apod-content').innerHTML = `<p>Error: ${err.message}</p>`;
+  }
+});
+
+fetchAPOD().then(renderAPOD).catch(err => {
+  document.getElementById('apod-content').innerHTML = `<p>Error: ${err.message}</p>`;
+  document.getElementById('apod-date').textContent = '';
+});

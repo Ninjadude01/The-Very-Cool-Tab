@@ -2,7 +2,6 @@ body{
     margin:0;
     min-height: 100vh;
     position:relative;
-    background-color: rgb(103, 100, 205);
     font-family: 'SkModernist'
     
 }
@@ -40,15 +39,12 @@ body{
 .apod-title{
     color: #ffffff;
     width:70%;
-    display:block;
-    margin: 5px auto;
-    border-color: #000000;
+    margin: 8px auto;
     background-color: rgb(0, 128, 255);
-    border-width: 5px;
-    border-style: solid;
-    border-radius: 20px;
-    display:flex;
-    justify-content: space-around;
+    border: 3px solid #000000;
+    border-radius: 12px;
+    padding: 12px 16px;
+    text-align: center;
 }
 
 .apod-explanation{
@@ -56,17 +52,11 @@ body{
     line-height: 1.6;
     text-align: left;
     max-width:85%;
-    height:auto;
-    display:block;
-    padding:15px;
+    padding:16px;
     margin: 12px auto;
-    border-color: #000000;
     background-color: rgb(0, 128, 255);
-    border-width: 5px;
-    border-style: solid;
-    border-radius: 20px;
-    display:flex;
-    justify-content: space-around;
+    border: 3px solid #000000;
+    border-radius: 12px;
 }
 
 img, video, iframe{
@@ -75,11 +65,8 @@ img, video, iframe{
     display:block;
     margin: 12px auto;
     background-color: rgb(0, 128, 255);
-    border-width: 5px;
-    border-style: solid;
-    border-radius: 20px;
-    display:flex;
-    justify-content: space-around;
+    border: 3px solid #000000;
+    border-radius: 12px;
 }
 
 .video-wrapper{
@@ -90,3 +77,49 @@ img, video, iframe{
 }
 
 .video-wrapper iframe{ width:100%; height:100%; }
+
+    .apod-controls{
+        display:flex;
+        gap:12px;
+        justify-content:center;
+        align-items:center;
+        margin: 0 auto 16px;
+        z-index: 2;
+        position: relative;
+        max-width: 480px; 
+    }
+
+.apod-controls > *{
+    flex: 1 1 0;
+    min-width: 0; 
+    box-sizing: border-box;
+    text-align: center;
+}
+
+
+.apod-date{
+    color: #fff;
+    background: rgba(222, 41, 41, 0.3);
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-weight:600;
+    border: 2px solid #000000;
+}
+
+
+.random-btn{
+    font-family: 'SkModernist';
+    background: rgba(222, 41, 41, 0.3);
+    cursor: pointer;
+    padding: 10px 12px;
+    color: #fff;
+    font-size: medium;
+    border-radius: 6px;
+    font-weight:600;
+    border: 2px solid #000000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.random-btn:hover{ opacity: 0.8; }
